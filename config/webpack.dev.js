@@ -28,6 +28,7 @@ module.exports = merge(base, {
 		port: 5500,
 		publicPath: '/',
 		watchContentBase: true,
+		historyApiFallback: true,
 
 	},
 

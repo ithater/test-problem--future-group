@@ -3,14 +3,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = !isDev;
 
 const PATHS = require('./paths');
 
 const filename = ext => (isDev ? `[name].${ext}` : `[name].[fullhash].${ext}`);
-
 
 module.exports = {
 	// Входные файлы
@@ -22,6 +20,7 @@ module.exports = {
 	output: {
 		filename: `js/${filename('js')}`,
 		path: `${PATHS.build}/`,
+		publicPath: '/',
 	},
 
 	// Алиасы
@@ -35,12 +34,11 @@ module.exports = {
 
 	// Плагины
 	plugins: [
-
 		// Сброка html
 		new HTMLWebpackPlugin({
 			template: `${PATHS.src}/index.html`,
 			minify: {
-				collapseWhitespace: isProd
+				collapseWhitespace: isProd,
 			},
 			chunks: ['main'],
 			filename: 'index.html',
@@ -70,24 +68,56 @@ module.exports = {
 			// css
 			{
 				test: /\.css$/,
+				exclude: /\.module\.css$/,
+				use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+			},
+			// css modules
+			{
+				test: /\.css$/,
+				include: /\.module\.css$/,
 				use: [
 					MiniCssExtractPlugin.loader,
-					'css-loader',
-					'postcss-loader'
+					{
+						loader: 'css-loader',
+						options: {
+							importLoaders: 1,
+							modules: true,
+						},
+					},
+					'postcss-loader',
 				],
 			},
 
 			// sass/sccs
 			{
 				test: /\.s[ac]ss$/,
+				exclude: /\.module\.s[ac]ss$/,
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
 					'postcss-loader',
-					'sass-loader'
+					'sass-loader',
 				],
 			},
 
+			// sass/sccs modules
+			{
+				test: /\.s[ac]ss$/,
+				include: /\.module\.s[ac]ss$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					{
+						loader: 'css-loader',
+						options: {
+							importLoaders: 1,
+							modules: true,
+						},
+					},
+					'postcss-loader',
+					'sass-loader',
+				],
+			},
+			
 			// images
 			{
 				test: /img\.svg$|\.(png|jpg|jpeg|gif)$/,
@@ -97,7 +127,7 @@ module.exports = {
 						options: {
 							publicPath: '../',
 							name: `assets/image/[name].[ext]`,
-						}
+						},
 					},
 				],
 			},
@@ -124,14 +154,12 @@ module.exports = {
 					{
 						loader: 'babel-loader',
 						options: {
-							presets: [
-								'@babel/preset-env'
-							]
+							presets: ['@babel/preset-env'],
 						},
 					},
 				],
 			},
-			
+
 			// react jsx
 			{
 				test: /\.jsx$/,
@@ -140,17 +168,12 @@ module.exports = {
 					{
 						loader: 'babel-loader',
 						options: {
-							presets: [
-								'@babel/preset-env',
-								'@babel/preset-react',
-							],
-							plugins: [
-								'babel-plugin-styled-components'
-							]
+							presets: ['@babel/preset-env', '@babel/preset-react'],
+							plugins: ['babel-plugin-styled-components'],
 						},
 					},
 				],
-			}
-		]
+			},
+		],
 	},
 };
