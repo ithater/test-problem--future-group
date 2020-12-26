@@ -25,7 +25,7 @@ const App = () => {
 
 	return (
 		<>
-			<GlobalStyle />{' '}
+			<GlobalStyle />
 			<Router>
 				<Switch>
 					{error && <Redirect exact from="/" to="/error" />}

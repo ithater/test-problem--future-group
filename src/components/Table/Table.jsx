@@ -70,9 +70,7 @@ const Table = props => {
 
 						<tbody>
 							{pageData.map(user => {
-								const key = `${user.id}+${user.firstName}+${
-									user.lastName
-								}+${Math.random()}`;
+								const key = user.__key__;
 								return (
 									<UserRow
 										key={key}

@@ -78,6 +78,7 @@ const Spinner = props => {
 
 const Wrapper = styled.div`
 	position: fixed;
+	z-index: 200;
 	top: 0;
 	right: 0;
 	bottom: 0;

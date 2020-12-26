@@ -1,26 +1,51 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-const Search = props => {
-	const {} = props;
-	const [searchQuery, setSearchQuery] = useState('');
-	const isDisabled = searchQuery.trim() === '';
+import getObjectValues from '@functions/getObjectValues';
 
-	const onChange = evt => setSearchQuery(evt.target.value);
-	const onClick = () => {
-		console.log(25);
-	}
+const Search = props => {
+	const { sortedUserData, setSearchedData } = props;
+	const [searchQuery, setSearchQuery] = useState('');
+
+	const onChange = evt => {
+		setSearchQuery(evt.target.value);
+	};
+
+	const find = evt => {
+		evt.preventDefault();
+		if (searchQuery.trim() === '') return setSearchedData(null);
+		const queryString = searchQuery.trim().toLowerCase();
+
+		const newSearchedData = sortedUserData.filter(user => {
+			// поскольку у нас есть ключ __key__, который
+			// не должен проходить проверки, делаем копию
+			// с которой будем получать все значения
+			const userWithoutKey = { ...user };
+			delete userWithoutKey.__key__;
+			const valuesToCheck = getObjectValues(userWithoutKey);
+
+			// делаем проверку на то, что в массиве нет
+			// ни одного подходящего эдемента, если найдем совпадение,
+			// то вернем false и поменяем на true.
+			const isCorresponding = !valuesToCheck.every(value => {
+				return !value.toString().toLowerCase().includes(queryString);
+			});
+			return isCorresponding;
+		});
+		console.log(newSearchedData);
+		setSearchedData(newSearchedData);
+	};
 
 	return (
-		<Wrapper>
+		<Form onSubmit={find}>
 			<Input value={searchQuery} onChange={onChange} type="text" />
 
-			<Find onClick={onClick} disabled={isDisabled}>Найти</Find>
-		</Wrapper>
+			<Find>Найти</Find>
+		</Form>
 	);
 };
 
-const Wrapper = styled.div`
+const Form = styled.form`
 	display: flex;
 `;
 
@@ -39,7 +64,7 @@ const Input = styled.input`
 	}
 `;
 
-const Find = styled.button`
+const Find = styled.button.attrs({ type: 'submit' })`
 	padding: 10px;
 	font-weight: 600;
 	color: #4d535a;

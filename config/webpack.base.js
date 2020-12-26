@@ -28,6 +28,8 @@ module.exports = {
 		extensions: ['.js', '.json', '.jsx'],
 		alias: {
 			'@components': `${PATHS.src}/components`,
+			'@functions': `${PATHS.src}/components/Functions`,
+			'@hooks': `${PATHS.src}/components/Hooks`,
 			'@': PATHS.src,
 		},
 	},

@@ -16,13 +16,14 @@ const Home = props => {
 	const [activeUserInfo, setActiveUserInfo] = useState(null);
 
 	const [activePagination, setActivePagination] = useState(1);
-	
+
 	const [spinner, setSpinner] = useState(false);
 	const [modalForm, setModalForm] = useState(false);
 	const modalFormRef = useRef(null);
 
 	const maxElemsPerPage = 50;
-	const paginationLength = Math.ceil(sortedUserData.length / maxElemsPerPage) || 1;
+	const paginationLength =
+		Math.ceil(sortedUserData.length / maxElemsPerPage) || 1;
 
 	const closeModalFrom = evt => {
 		if (
@@ -42,7 +43,12 @@ const Home = props => {
 		<Container>
 			<Spinner spinner={spinner} />
 
-			<Search />
+			<Search
+				sortedUserData={sortedUserData}
+				setSortedUserData={setSortedUserData}
+				searchedData={searchedData}
+				setSearchedData={setSearchedData}
+			/>
 
 			<ModalForm
 				modalFormRef={modalFormRef}
@@ -53,7 +59,7 @@ const Home = props => {
 				setSortedUserData={setSortedUserData}
 				maxElemsPerPage={maxElemsPerPage}
 			/>
-			
+
 			<Table
 				activePagination={activePagination}
 				maxElemsPerPage={maxElemsPerPage}
@@ -64,6 +70,8 @@ const Home = props => {
 				sortedUserData={sortedUserData}
 				setSortedUserData={setSortedUserData}
 			/>
+
+
 
 			{activeUserInfo && <ActiveUserInfo activeUserInfo={activeUserInfo} />}
 

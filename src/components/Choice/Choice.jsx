@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
+import { v4 as generateKey } from 'uuid';
+
 import Spinner from '@components/Spinner/Spinner';
 
 const SMALL__DATA__URL =
@@ -43,7 +45,10 @@ const Choice = props => {
 				throw new Error(`An error has occured: ${response.status}`);
 			}
 			const responseData = await response.json();
+			// добавляем key для каждого элемента
+			responseData.forEach(item => item.__key__ = generateKey());
 			console.log('responseData: ', responseData);
+
 
 			// сохраняем данные, делаем редирект, выключем спинер
 			setUserData(responseData);

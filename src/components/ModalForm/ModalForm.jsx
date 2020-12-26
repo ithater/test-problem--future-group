@@ -3,6 +3,9 @@ import styled, { css } from 'styled-components';
 
 import Input from './Input';
 
+import { v4 as generateKey } from 'uuid';
+
+
 const ModalForm = props => {
 	const {
 		modalForm,
@@ -20,9 +23,13 @@ const ModalForm = props => {
 
 	const onSubmit = evt => {
 		evt.preventDefault();
+		if (isDisabled) return;
+
+		const user = {...formData, __key__: generateKey()}
 		const indexToAdd = activePagination * maxElemsPerPage - maxElemsPerPage;
-		const newSortedData = [...sortedUserData]
-		newSortedData.splice(indexToAdd, 0, formData);
+		const newSortedData = [...sortedUserData];
+		newSortedData.splice(indexToAdd, 0, user);
+
 		setSortedUserData(newSortedData);
 		setModalForm(false);
 		clearFormData();
@@ -31,9 +38,9 @@ const ModalForm = props => {
 	const clearFormData = () => {
 		const newFormData = {};
 		for (let key in formData) {
-			newFormData[key] = ''
+			newFormData[key] = '';
 		}
-		setFormData(newFormData)
+		setFormData(newFormData);
 	};
 
 	return (
@@ -65,7 +72,7 @@ const ModalForm = props => {
 							<Input
 								state={formData}
 								setState={setFormData}
-								name={'id'}
+								name="id"
 								type="number"
 							/>
 						</DataCell>
@@ -73,7 +80,7 @@ const ModalForm = props => {
 							<Input
 								state={formData}
 								setState={setFormData}
-								name={'firstName'}
+								name="firstName"
 								type="text"
 							/>
 						</DataCell>
@@ -81,7 +88,7 @@ const ModalForm = props => {
 							<Input
 								state={formData}
 								setState={setFormData}
-								name={'lastName'}
+								name="lastName"
 								type="text"
 							/>
 						</DataCell>
@@ -89,7 +96,7 @@ const ModalForm = props => {
 							<Input
 								state={formData}
 								setState={setFormData}
-								name={'email'}
+								name="email"
 								type="text"
 							/>
 						</DataCell>
@@ -97,7 +104,7 @@ const ModalForm = props => {
 							<Input
 								state={formData}
 								setState={setFormData}
-								name={'phone'}
+								name="phone"
 								type="text"
 							/>
 						</DataCell>
