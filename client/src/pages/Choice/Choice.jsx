@@ -47,7 +47,6 @@ const Choice = props => {
 			const responseData = await response.json();
 			// добавляем key для каждого элемента
 			responseData.forEach(item => (item.__key__ = generateKey()));
-			console.log('responseData: ', responseData);
 
 			// сохраняем данные, делаем редирект, выключем спинер
 			setUserData(responseData);
