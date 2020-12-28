@@ -4,8 +4,6 @@ import styled from 'styled-components';
 const Error = props => {
 	const { error } = props;
 	
-	console.log('error: ', error);
-
 	return (
 		<ErrorWrapper>
 			<ErrorDialog>

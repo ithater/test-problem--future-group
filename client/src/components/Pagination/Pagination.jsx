@@ -15,14 +15,9 @@ const Pagination = props => {
 
 	useEffect(() => {
 		const trimStart = (activePagination - 1) * maxElemsPerPage;
-		console.log('trimStart: ', trimStart);
+
 		const trimEnd = trimStart + maxElemsPerPage;
-		const newPageData =
-			currentData &&
-			currentData.slice(
-				trimStart,
-				trimEnd
-			);
+		const newPageData = currentData && currentData.slice(trimStart, trimEnd);
 
 		setPageData(newPageData);
 	}, [activePagination, currentData]);
@@ -33,7 +28,7 @@ const Pagination = props => {
 	};
 
 	const paginationLength = Math.ceil(currentData.length / maxElemsPerPage);
-	console.log('paginationLength: ', paginationLength);
+
 
 	// paginani это элемент пагинции. кнопочка (1) (2) .
 	const leftPaginanis = [];

@@ -17,7 +17,7 @@ const qSort = (list, key, type = 'increase') => {
 	};
 
 	const sortedList = sort(list, key);
-	console.log('sort func');
+
 
 	if (type === 'decrease') sortedList.reverse();
 
