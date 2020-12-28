@@ -14,11 +14,14 @@ const Pagination = props => {
 	} = props;
 
 	useEffect(() => {
+		const trimStart = (activePagination - 1) * maxElemsPerPage;
+		console.log('trimStart: ', trimStart);
+		const trimEnd = trimStart + maxElemsPerPage;
 		const newPageData =
 			currentData &&
 			currentData.slice(
-				activePagination * maxElemsPerPage - maxElemsPerPage,
-				activePagination * maxElemsPerPage
+				trimStart,
+				trimEnd
 			);
 
 		setPageData(newPageData);
