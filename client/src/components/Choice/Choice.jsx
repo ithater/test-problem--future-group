@@ -65,7 +65,7 @@ const Choice = props => {
 		<Container>
 			<Spinner spinner={spinner} />
 			<Content>
-				<Title>Выберите объём, который вы хотите загрузить.</Title>
+				<Title>Выберите объём данных, который вы хотите загрузить.</Title>
 				<Holder>
 					<ChoiceButton onClick={() => fetchData(SMALL__DATA__URL)}>
 						Маленький

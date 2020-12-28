@@ -11,10 +11,12 @@ const ModalForm = props => {
 		modalForm,
 		setModalForm,
 		modalFormRef,
-		sortedUserData,
-		setSortedUserData,
+		userData,
+		setUserData,
 		maxElemsPerPage,
 		activePagination,
+		setCurrentData,
+		
 	} = props;
 	const [formData, setFormData] = useState({});
 	const isDisabled = !Object.entries(formData).every(([key, val]) => {
@@ -27,10 +29,11 @@ const ModalForm = props => {
 
 		const user = {...formData, __key__: generateKey()}
 		const indexToAdd = activePagination * maxElemsPerPage - maxElemsPerPage;
-		const newSortedData = [...sortedUserData];
-		newSortedData.splice(indexToAdd, 0, user);
+		const newUserData = [...userData];
+		newUserData.splice(indexToAdd, 0, user);
 
-		setSortedUserData(newSortedData);
+		setUserData(newUserData);
+		setCurrentData(newUserData);
 		setModalForm(false);
 		clearFormData();
 	};

@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 const Pagination = props => {
-	const { paginationLength, activePagination, setActivePagination, setActiveUserInfo } = props;
+	const {
+		maxElemsPerPage,
 
+		activePagination,
+		setActivePagination,
+		setActiveUserInfo,
+		currentData,
 
-	const togglePage = (page) => {
+		setPageData,
+	} = props;
+
+	useEffect(() => {
+		const newPageData =
+			currentData &&
+			currentData.slice(
+				activePagination * maxElemsPerPage - maxElemsPerPage,
+				activePagination * maxElemsPerPage
+			);
+
+		setPageData(newPageData);
+	}, [activePagination, currentData]);
+
+	const togglePage = page => {
 		setActivePagination(page);
 		setActiveUserInfo(null);
 	};
+
+	const paginationLength = Math.ceil(currentData.length / maxElemsPerPage);
+	console.log('paginationLength: ', paginationLength);
 
 	// paginani это элемент пагинции. кнопочка (1) (2) .
 	const leftPaginanis = [];
@@ -36,40 +58,44 @@ const Pagination = props => {
 			// и решение будет ли отображаться
 			// наша пагинани
 			// if (activePagination <= 5) {
-				const paginani = createPaginani({
-					key: i,
-					active: activePagination === i,
-					text: i,
-					onClick: () => togglePage(i),
-				});
-				paginanis.push(paginani);
-				continue;
+			const paginani = createPaginani({
+				key: i,
+				active: activePagination === i,
+				text: i,
+				onClick: () => togglePage(i),
+			});
+			paginanis.push(paginani);
+			continue;
 			// }
 		}
 	}
 
 	return (
-		<Holder>
-			{activePagination !== 1 && (
-				<TogglePageButton
-					onClick={() => togglePage(activePagination - 1)}
-					itemType="left"
-				>
-					Предыдущая
-				</TogglePageButton>
-			)}
+		<PaginationWrapper paginationLength={paginationLength}>
+			{paginationLength > 0 && (
+				<>
+					{activePagination !== 1 && (
+						<TogglePageButton
+							onClick={() => togglePage(activePagination - 1)}
+							itemType="left"
+						>
+							Предыдущая
+						</TogglePageButton>
+					)}
 
-			<Holder>{paginanis}</Holder>
+					<Holder>{paginanis}</Holder>
 
-			{paginationLength !== activePagination && (
-				<TogglePageButton
-					onClick={() => togglePage(activePagination + 1)}
-					itemType="right"
-				>
-					Следующая
-				</TogglePageButton>
+					{paginationLength !== activePagination && (
+						<TogglePageButton
+							onClick={() => togglePage(activePagination + 1)}
+							itemType="right"
+						>
+							Следующая
+						</TogglePageButton>
+					)}
+				</>
 			)}
-		</Holder>
+		</PaginationWrapper>
 	);
 };
 
@@ -82,7 +108,17 @@ const createPaginani = ({ key, text, onClick, active }) => (
 const Holder = styled.div`
 	display: flex;
 	align-items: center;
-	padding: 20px 0;
+`;
+
+const PaginationWrapper = styled.div`
+	display: flex;
+	align-items: center;
+	padding: 40px 0;
+	${({ paginationLength }) =>
+		paginationLength === 0 &&
+		css`
+			display: none;
+		`}
 `;
 
 const TogglePageButton = styled.button`

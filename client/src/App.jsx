@@ -39,7 +39,7 @@ const App = () => {
 					</Route>
 
 					<Route exact path="/home">
-						{userData ? <Home userData={userData} /> : <Redirect to="/" />}
+						{userData ? <Home setUserData={setUserData} userData={userData} /> : <Redirect to="/" />}
 					</Route>
 				</Switch>
 			</Router>

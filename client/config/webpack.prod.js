@@ -10,6 +10,7 @@ module.exports = merge(base, {
 	// Режим продакшена
 	mode: 'production',
 	target: 'browserslist',
+	
 
 	// Control how source maps are generated
 	devtool: false,

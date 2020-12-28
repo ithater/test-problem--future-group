@@ -2,28 +2,26 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 
 import ModalForm from '@components/ModalForm/ModalForm';
-import Table from '@components/Table/Table';
 import ActiveUserInfo from '@components/ActiveUserInfo/ActiveUserInfo';
 import Pagination from '@components/Pagination/Pagination';
 
 import Spinner from '@components/Spinner/Spinner';
 import Search from '@components/Search/Search';
+import Content from '@components/Content/Content';
 
 const Home = props => {
-	const { userData } = props;
-	const [sortedUserData, setSortedUserData] = useState(userData);
-	const [searchedData, setSearchedData] = useState(null);
+	const { userData, setUserData } = props;
+	const [currentData, setCurrentData] = useState(userData);
+	const [pageData, setPageData] = useState([]);
 	const [activeUserInfo, setActiveUserInfo] = useState(null);
-
 	const [activePagination, setActivePagination] = useState(1);
-
 	const [spinner, setSpinner] = useState(false);
 	const [modalForm, setModalForm] = useState(false);
-	const modalFormRef = useRef(null);
+	const [contentType, setContentType] = useState('commonData');
+	const [shouldSort, setShouldSort] = useState(0);
 
+	const modalFormRef = useRef(null);
 	const maxElemsPerPage = 50;
-	const paginationLength =
-		Math.ceil(sortedUserData.length / maxElemsPerPage) || 1;
 
 	const closeModalFrom = evt => {
 		if (
@@ -44,42 +42,59 @@ const Home = props => {
 			<Spinner spinner={spinner} />
 
 			<Search
-				sortedUserData={sortedUserData}
-				setSortedUserData={setSortedUserData}
-				searchedData={searchedData}
-				setSearchedData={setSearchedData}
+				userData={userData}
+
+				currentData={currentData}
+				setCurrentData={setCurrentData}
+
+				contentType={contentType}
+				setContentType={setContentType}
+
+				setActivePagination={setActivePagination}
+				
+				setActiveUserInfo={setActiveUserInfo}
+
+				setShouldSort={setShouldSort}
 			/>
 
 			<ModalForm
 				modalFormRef={modalFormRef}
 				modalForm={modalForm}
 				setModalForm={setModalForm}
+
 				activePagination={activePagination}
-				sortedUserData={sortedUserData}
-				setSortedUserData={setSortedUserData}
+
+				userData={userData}
+				setUserData={setUserData}
+
+				setCurrentData={setCurrentData}
+
 				maxElemsPerPage={maxElemsPerPage}
 			/>
 
-			<Table
-				activePagination={activePagination}
-				maxElemsPerPage={maxElemsPerPage}
-				setActiveUserInfo={setActiveUserInfo}
-				activeUserInfo={activeUserInfo}
+			<Content
+				currentData={currentData}
+				setCurrentData={setCurrentData}
 				setSpinner={setSpinner}
 				setModalForm={setModalForm}
-				sortedUserData={sortedUserData}
-				setSortedUserData={setSortedUserData}
+				activeUserInfo={activeUserInfo}
+				setActiveUserInfo={setActiveUserInfo}
+				pageData={pageData}
+				contentType={contentType}
+				setContentType={setContentType}
+				shouldSort={shouldSort}
 			/>
-
-
 
 			{activeUserInfo && <ActiveUserInfo activeUserInfo={activeUserInfo} />}
 
 			<Pagination
+				currentData={currentData}
+				maxElemsPerPage={maxElemsPerPage}
 				activePagination={activePagination}
 				setActivePagination={setActivePagination}
-				paginationLength={paginationLength}
 				setActiveUserInfo={setActiveUserInfo}
+				pageData={pageData}
+				setPageData={setPageData}
 			/>
 		</Container>
 	);
@@ -95,3 +110,4 @@ const Container = styled.div`
 `;
 
 export default Home;
+

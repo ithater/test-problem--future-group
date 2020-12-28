@@ -4,7 +4,20 @@ import styled, { css } from 'styled-components';
 import getObjectValues from '@functions/getObjectValues';
 
 const Search = props => {
-	const { sortedUserData, setSearchedData } = props;
+	const {
+		userData,
+
+		setCurrentData,
+
+		contentType,
+		setContentType,
+
+		setActivePagination,
+		setShouldSort,
+
+		setActiveUserInfo,
+	} = props;
+
 	const [searchQuery, setSearchQuery] = useState('');
 
 	const onChange = evt => {
@@ -13,10 +26,15 @@ const Search = props => {
 
 	const find = evt => {
 		evt.preventDefault();
-		if (searchQuery.trim() === '') return setSearchedData(null);
+		if (searchQuery.trim() === '') {
+			if (contentType === 'commonData') return;
+			setContentType('commonData');
+			setCurrentData(userData);
+			return;
+		}
 		const queryString = searchQuery.trim().toLowerCase();
 
-		const newSearchedData = sortedUserData.filter(user => {
+		const newSearchedData = userData.filter(user => {
 			// поскольку у нас есть ключ __key__, который
 			// не должен проходить проверки, делаем копию
 			// с которой будем получать все значения
@@ -24,7 +42,7 @@ const Search = props => {
 			delete userWithoutKey.__key__;
 			const valuesToCheck = getObjectValues(userWithoutKey);
 
-			// делаем проверку на то, что в массиве нет
+			// делаем проверку на то, что в массиве значений нет
 			// ни одного подходящего эдемента, если найдем совпадение,
 			// то вернем false и поменяем на true.
 			const isCorresponding = !valuesToCheck.every(value => {
@@ -32,14 +50,16 @@ const Search = props => {
 			});
 			return isCorresponding;
 		});
-		console.log(newSearchedData);
-		setSearchedData(newSearchedData);
+		setActivePagination(1);
+		setActiveUserInfo(null);
+		setCurrentData(newSearchedData);
+		if (contentType !== 'searchedData') setContentType('searchedData');
+		else setShouldSort(Math.random());
 	};
 
 	return (
 		<Form onSubmit={find}>
 			<Input value={searchQuery} onChange={onChange} type="text" />
-
 			<Find>Найти</Find>
 		</Form>
 	);
