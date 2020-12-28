@@ -12,10 +12,15 @@ import Content from '@components/Content/Content';
 const Home = props => {
 	const { userData, setUserData } = props;
 	const [currentData, setCurrentData] = useState(userData);
+
 	const [pageData, setPageData] = useState([]);
+
 	const [activeUserInfo, setActiveUserInfo] = useState(null);
+
 	const [activePagination, setActivePagination] = useState(1);
+
 	const [spinner, setSpinner] = useState(false);
+	console.log('spinner: ', spinner);
 	const [modalForm, setModalForm] = useState(false);
 	const [contentType, setContentType] = useState('commonData');
 	const [shouldSort, setShouldSort] = useState(0);
@@ -37,23 +42,25 @@ const Home = props => {
 		return () => document.removeEventListener('click', closeModalFrom);
 	}, []);
 
+	useEffect(() => {
+		const trimStart = (activePagination - 1) * maxElemsPerPage;
+		const trimEnd = trimStart + maxElemsPerPage;
+		const newPageData = currentData && currentData.slice(trimStart, trimEnd);
+		setPageData(newPageData);
+	}, [activePagination, currentData]);
+
 	return (
 		<Container>
-			<Spinner spinner={spinner} />
+			{spinner && <Spinner />}
 
 			<Search
 				userData={userData}
-
 				currentData={currentData}
 				setCurrentData={setCurrentData}
-
 				contentType={contentType}
 				setContentType={setContentType}
-
 				setActivePagination={setActivePagination}
-				
 				setActiveUserInfo={setActiveUserInfo}
-
 				setShouldSort={setShouldSort}
 			/>
 
@@ -61,14 +68,10 @@ const Home = props => {
 				modalFormRef={modalFormRef}
 				modalForm={modalForm}
 				setModalForm={setModalForm}
-
 				activePagination={activePagination}
-
 				userData={userData}
 				setUserData={setUserData}
-
 				setCurrentData={setCurrentData}
-
 				maxElemsPerPage={maxElemsPerPage}
 			/>
 
@@ -95,6 +98,7 @@ const Home = props => {
 				setActiveUserInfo={setActiveUserInfo}
 				pageData={pageData}
 				setPageData={setPageData}
+				oneSide={3}
 			/>
 		</Container>
 	);
@@ -110,4 +114,3 @@ const Container = styled.div`
 `;
 
 export default Home;
-

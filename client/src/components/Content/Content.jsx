@@ -17,8 +17,6 @@ const Content = props => {
 	} = props;
 
 
-	console.log(contentType);
-	console.log(pageData);
 	return (
 		<>
 			{contentType === 'commonData' && (

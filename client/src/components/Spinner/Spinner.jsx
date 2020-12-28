@@ -3,11 +3,9 @@ import styled, { css } from 'styled-components';
 import s from './spinner.module.css';
 
 
-const Spinner = props => {
-	const { spinner } = props;
+const Spinner = () => {
 	return (
-		<Wrapper spinner={spinner}>
-			{spinner && (
+		<Wrapper>
 				<div className={s['loader-body']}>
 					<svg className={s.gegga}>
 						<defs>
@@ -71,7 +69,6 @@ const Spinner = props => {
 						<circle className={s.strecken} cx="100" cy="100" r="64" />
 					</svg>
 				</div>
-			)}
 		</Wrapper>
 	);
 };
@@ -90,12 +87,6 @@ const Wrapper = styled.div`
 	justify-content: center;
 	align-items: center;
 	background-color: #333333;
-	${({ spinner }) =>
-		!spinner &&
-		css`
-			z-index: -10;
-			opacity: 0;
-		`}
 `;
 
 export default Spinner;

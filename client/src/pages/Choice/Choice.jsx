@@ -46,9 +46,8 @@ const Choice = props => {
 			}
 			const responseData = await response.json();
 			// добавляем key для каждого элемента
-			responseData.forEach(item => item.__key__ = generateKey());
+			responseData.forEach(item => (item.__key__ = generateKey()));
 			console.log('responseData: ', responseData);
-
 
 			// сохраняем данные, делаем редирект, выключем спинер
 			setUserData(responseData);
@@ -63,7 +62,7 @@ const Choice = props => {
 
 	return (
 		<Container>
-			<Spinner spinner={spinner} />
+			{spinner && <Spinner />}
 			<Content>
 				<Title>Выберите объём данных, который вы хотите загрузить.</Title>
 				<Holder>

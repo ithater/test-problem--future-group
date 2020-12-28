@@ -9,34 +9,17 @@ const Pagination = props => {
 		setActivePagination,
 		setActiveUserInfo,
 		currentData,
-
-		setPageData,
+		oneSide = 3,
 	} = props;
-
-	useEffect(() => {
-		const newPageData =
-			currentData &&
-			currentData.slice(
-				activePagination * maxElemsPerPage - maxElemsPerPage,
-				activePagination * maxElemsPerPage
-			);
-
-		setPageData(newPageData);
-	}, [activePagination, currentData]);
-
 	const togglePage = page => {
 		setActivePagination(page);
 		setActiveUserInfo(null);
 	};
 
 	const paginationLength = Math.ceil(currentData.length / maxElemsPerPage);
-	console.log('paginationLength: ', paginationLength);
 
 	// paginani это элемент пагинции. кнопочка (1) (2) .
-	const leftPaginanis = [];
-	const rightPaginanis = [];
 	const paginanis = [];
-	const maxPaginani = 5;
 
 	// если страниц с пагинацией будет до 8 (включительно),
 	// то отображаем всю пагинацию
@@ -53,11 +36,73 @@ const Pagination = props => {
 		}
 		// иначе делаем умную пагинацию
 	} else {
-		for (let i = 1; i <= paginationLength; i++) {
-			// перебор каждого индекса
-			// и решение будет ли отображаться
-			// наша пагинани
-			// if (activePagination <= 5) {
+		// вычисляем сколько элементов нам необходимо отобразить
+		// в 1 части ((1) [левая activePagination правая] (последний элемент))
+		
+		const separator = oneSide;
+
+		// делаем 1 элемент
+		const theFirsthPaginani = createPaginani({
+			key: 1,
+			active: activePagination === 1,
+			text: 1,
+			onClick: () => togglePage(1),
+		});
+		paginanis.push(theFirsthPaginani);
+
+		// делаем элементы по середине
+		// вычисляем индекс первого элемента левой части
+		let maxLeft = activePagination - separator;
+		console.log('maxLeft: ', maxLeft);
+		// вычисляем индекс последнего элемента правой части
+		let maxRight = activePagination + separator;
+		console.log('maxRight: ', maxRight);
+
+		// делаем проверки на то, чтобы мы не перешли пороги
+		// т.е. не дошли до <0 или до >максимального элемента
+		if (maxLeft <= 1) {
+			maxLeft = 2;
+			maxRight = separator * 2;
+		}
+		if (maxRight >= paginationLength) {
+			maxLeft = paginationLength - separator * 2;
+			maxRight = paginationLength - 1;
+			if (maxLeft <= 1) maxLeft = 2;
+		}
+
+
+
+		for (let i = maxLeft; i <= maxRight; i++) {
+			// решаем должны ли вставлять (...) элемент
+		
+			const shouldBreakLeft = activePagination >= separator * 2 - 1;
+			const shouldBreakRight = activePagination <= paginationLength - (separator * 2 - 1);
+			// случай левой "поломки" (...)
+			if (shouldBreakLeft && i === maxLeft) {
+				const paginani = createPaginani({
+					key: i,
+					active: activePagination === i,
+					text: '...',
+					onClick: () => togglePage(i),
+				});
+				paginanis.push(paginani);
+				continue;
+			}
+
+			// случай правой "поломки" (...)
+			if (shouldBreakRight && i === maxRight) {
+				const paginani = createPaginani({
+					key: i,
+					active: activePagination === i,
+					text: '...',
+					onClick: () => togglePage(i),
+				});
+				paginanis.push(paginani);
+				continue;
+			}
+
+
+
 			const paginani = createPaginani({
 				key: i,
 				active: activePagination === i,
@@ -65,9 +110,16 @@ const Pagination = props => {
 				onClick: () => togglePage(i),
 			});
 			paginanis.push(paginani);
-			continue;
-			// }
 		}
+
+		// делаем последний элемент
+		const theLastPaginani = createPaginani({
+			key: paginationLength,
+			active: activePagination === paginationLength,
+			text: paginationLength,
+			onClick: () => togglePage(paginationLength),
+		});
+		paginanis.push(theLastPaginani);
 	}
 
 	return (

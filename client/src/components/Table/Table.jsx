@@ -36,11 +36,8 @@ const Table = props => {
 	useEffect(() => {
 		setSpinner(true);
 		const newSortedUserData = qSort(currentData, sortValue, sortType);
-		console.log(newSortedUserData);
 		setCurrentData(newSortedUserData);
 		setSpinner(false);
-		console.log(contentType);
-		
 	}, [sortType, sortValue, contentType, shouldSort]);
 
 	// поля, которые будут отображаться в title (th)
