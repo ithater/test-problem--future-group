@@ -8,9 +8,9 @@ import React, { useState } from 'react';
 
 import GlobalStyle from './GlobalStyle';
 
-import Error from './components/Error/Error';
-import Choice from './components/Choice/Choice';
-import Home from './components/Home/Home';
+import Error from './pages/Error/Error';
+import Choice from './pages/Choice/Choice';
+import Home from './pages/Home/Home';
 
 import {
 	BrowserRouter as Router,
