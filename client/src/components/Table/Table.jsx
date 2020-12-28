@@ -17,27 +17,21 @@ const Table = props => {
 		currentData,
 		setCurrentData,
 
-		setSpinner,
 		setModalForm,
 
 		activeUserInfo,
 		setActiveUserInfo,
 
 		contentType,
-		setContentType,
 
 		shouldSort,
 	} = props;
 	const [sortType, setSortType] = useState('increase');
 	const [sortValue, setSortValue] = useState('id');
 
-
-
 	useEffect(() => {
-		setSpinner(true);
 		const newSortedUserData = qSort(currentData, sortValue, sortType);
 		setCurrentData(newSortedUserData);
-		setSpinner(false);
 	}, [sortType, sortValue, contentType, shouldSort]);
 
 	// поля, которые будут отображаться в title (th)

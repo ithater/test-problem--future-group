@@ -1,125 +1,102 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
 const Pagination = props => {
 	const {
 		maxElemsPerPage,
-
 		activePagination,
 		setActivePagination,
-		setActiveUserInfo,
-		currentData,
-		oneSide = 3,
+		dataLength,
 	} = props;
-	const togglePage = page => {
-		setActivePagination(page);
-		setActiveUserInfo(null);
-	};
 
-	const paginationLength = Math.ceil(currentData.length / maxElemsPerPage);
-
-	// paginani это элемент пагинции. кнопочка (1) (2) .
-	const paginanis = [];
+	const paginationLength = Math.ceil(dataLength / maxElemsPerPage);
+	const paginationElems = [];
 
 	// если страниц с пагинацией будет до 8 (включительно),
 	// то отображаем всю пагинацию
 	if (paginationLength <= 8) {
 		for (let i = 1; i <= paginationLength; i++) {
-			const paginani = createPaginani({
+			const paginationEl = createPaginationEl({
 				key: i,
 				active: activePagination === i,
 				text: i,
-				onClick: () => togglePage(i),
+				onClick: () => setActivePagination(i),
 			});
 
-			paginanis.push(paginani);
+			paginationElems.push(paginationEl);
 		}
-		// иначе делаем умную пагинацию
 	} else {
-		// вычисляем сколько элементов нам необходимо отобразить
-		// в 1 части ((1) [левая activePagination правая] (последний элемент))
+		// иначе делаем умную пагинацию
 		
-		const separator = oneSide;
+		// логика вставок поломок (кнопок (...))  
+		// напрямую зависит от oneSide
+		const oneSide = 2;
+
 
 		// делаем 1 элемент
-		const theFirsthPaginani = createPaginani({
+		const theFirsthPaginani = createPaginationEl({
 			key: 1,
 			active: activePagination === 1,
 			text: 1,
-			onClick: () => togglePage(1),
+			onClick: () => setActivePagination(1),
 		});
-		paginanis.push(theFirsthPaginani);
+		paginationElems.push(theFirsthPaginani);
 
-		// делаем элементы по середине
+		// делаем элементы посередине
+
 		// вычисляем индекс первого элемента левой части
-		let maxLeft = activePagination - separator;
-		console.log('maxLeft: ', maxLeft);
+		let maxLeft = activePagination - oneSide;
 		// вычисляем индекс последнего элемента правой части
-		let maxRight = activePagination + separator;
-		console.log('maxRight: ', maxRight);
+		let maxRight = activePagination + oneSide;
 
 		// делаем проверки на то, чтобы мы не перешли пороги
-		// т.е. не дошли до <0 или до >максимального элемента
+		// т.е. не дошли до отрицательных индексов или сверхмаксимального индекса
 		if (maxLeft <= 1) {
 			maxLeft = 2;
-			maxRight = separator * 2;
+			maxRight = oneSide * 2 + 1;
 		}
+
 		if (maxRight >= paginationLength) {
-			maxLeft = paginationLength - separator * 2;
+			maxLeft = paginationLength - oneSide * 2;
 			maxRight = paginationLength - 1;
 			if (maxLeft <= 1) maxLeft = 2;
 		}
 
-
-
 		for (let i = maxLeft; i <= maxRight; i++) {
 			// решаем должны ли вставлять (...) элемент
-		
-			const shouldBreakLeft = activePagination >= separator * 2 - 1;
-			const shouldBreakRight = activePagination <= paginationLength - (separator * 2 - 1);
-			// случай левой "поломки" (...)
-			if (shouldBreakLeft && i === maxLeft) {
-				const paginani = createPaginani({
+			const shouldBreakLeft = activePagination > oneSide * 2;
+			const shouldBreakRight = activePagination <= paginationLength - (oneSide * 2);
+
+			if ((shouldBreakLeft && i === maxLeft) || (shouldBreakRight && i === maxRight)) {
+				const paginationEl = createPaginationEl({
 					key: i,
 					active: activePagination === i,
 					text: '...',
-					onClick: () => togglePage(i),
+					onClick: () => setActivePagination(i),
 				});
-				paginanis.push(paginani);
+				paginationElems.push(paginationEl);
 				continue;
 			}
 
-			// случай правой "поломки" (...)
-			if (shouldBreakRight && i === maxRight) {
-				const paginani = createPaginani({
-					key: i,
-					active: activePagination === i,
-					text: '...',
-					onClick: () => togglePage(i),
-				});
-				paginanis.push(paginani);
-				continue;
-			}
-
-
-
-			const paginani = createPaginani({
+			// иначе добавляем обычный элемент
+			const paginationEl = createPaginationEl({
 				key: i,
 				active: activePagination === i,
 				text: i,
-				onClick: () => togglePage(i),
+				onClick: () => setActivePagination(i),
 			});
-			paginanis.push(paginani);
+
+			paginationElems.push(paginationEl);
 		}
 
 		// делаем последний элемент
-		const theLastPaginani = createPaginani({
+		const theLastPaginani = createPaginationEl({
 			key: paginationLength,
 			active: activePagination === paginationLength,
 			text: paginationLength,
-			onClick: () => togglePage(paginationLength),
+			onClick: () => setActivePagination(paginationLength),
 		});
-		paginanis.push(theLastPaginani);
+		paginationElems.push(theLastPaginani);
 	}
 
 	return (
@@ -127,23 +104,23 @@ const Pagination = props => {
 			{paginationLength > 0 && (
 				<>
 					{activePagination !== 1 && (
-						<TogglePageButton
-							onClick={() => togglePage(activePagination - 1)}
+						<ToggleButton
+							onClick={() => setActivePagination(activePagination - 1)}
 							itemType="left"
 						>
 							Предыдущая
-						</TogglePageButton>
+						</ToggleButton>
 					)}
 
-					<Holder>{paginanis}</Holder>
+					<Holder>{paginationElems}</Holder>
 
 					{paginationLength !== activePagination && (
-						<TogglePageButton
-							onClick={() => togglePage(activePagination + 1)}
+						<ToggleButton
+							onClick={() => setActivePagination(activePagination + 1)}
 							itemType="right"
 						>
 							Следующая
-						</TogglePageButton>
+						</ToggleButton>
 					)}
 				</>
 			)}
@@ -151,10 +128,10 @@ const Pagination = props => {
 	);
 };
 
-const createPaginani = ({ key, text, onClick, active }) => (
-	<Paginani key={key} onClick={onClick} active={active}>
+const createPaginationEl = ({ key, text, onClick, active }) => (
+	<PaginationEl key={key} onClick={onClick} active={active}>
 		{text}
-	</Paginani>
+	</PaginationEl>
 );
 
 const Holder = styled.div`
@@ -173,7 +150,7 @@ const PaginationWrapper = styled.div`
 		`}
 `;
 
-const TogglePageButton = styled.button`
+const ToggleButton = styled.button`
 	padding: 10px;
 	background-color: #fff;
 
@@ -201,7 +178,7 @@ const TogglePageButton = styled.button`
 	}}
 `;
 
-const Paginani = styled.button`
+const PaginationEl = styled.button`
 	display: flex;
 	align-items: center;
 	justify-content: center;
